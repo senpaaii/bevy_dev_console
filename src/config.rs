@@ -64,9 +64,16 @@ pub trait ToColor32 {
 }
 impl ToColor32 for Color {
     fn to_color32(&self) -> Color32 {
-        let [r, g, b, a] = self.as_rgba_u8();
+        let srgba: Srgba = (*self).into();
+        let (r, g, b, a) = (srgba.red, srgba.green, srgba.blue, srgba.alpha);
 
-        Color32::from_rgba_unmultiplied(r, g, b, a)
+        // Convert the f32 values to u8
+        let r_u8 = (r * 255.0) as u8;
+        let g_u8 = (g * 255.0) as u8;
+        let b_u8 = (b * 255.0) as u8;
+        let a_u8 = (a * 255.0) as u8;
+
+        Color32::from_rgba_unmultiplied(r_u8, g_u8, b_u8, a_u8)
     }
 }
 
@@ -86,24 +93,24 @@ impl ConsoleTheme {
     /// Atom's iconic One Dark theme.
     pub const ONE_DARK: Self = Self {
         font: FontId::monospace(14.0),
-        dark: Color::rgb(0.42, 0.44, 0.48),
-        text_color: Color::rgb(0.67, 0.7, 0.75),
-        error: Color::rgb(0.91, 0.46, 0.5),
-        warning: Color::rgb(0.82, 0.56, 0.32),
-        info: Color::rgb(0.55, 0.76, 0.4),
-        debug: Color::rgb(0.29, 0.65, 0.94),
-        trace: Color::rgb(0.78, 0.45, 0.89),
+        dark: Color::srgb(0.42, 0.44, 0.48),
+        text_color: Color::srgb(0.67, 0.7, 0.75),
+        error: Color::srgb(0.91, 0.46, 0.5),
+        warning: Color::srgb(0.82, 0.56, 0.32),
+        info: Color::srgb(0.55, 0.76, 0.4),
+        debug: Color::srgb(0.29, 0.65, 0.94),
+        trace: Color::srgb(0.78, 0.45, 0.89),
     };
     /// High contrast theme, might help some people.
     pub const HIGH_CONTRAST: Self = Self {
         font: FontId::monospace(14.0),
-        dark: Color::rgb(0.5, 0.5, 0.5),
-        text_color: Color::rgb(1.0, 1.0, 1.0),
-        error: Color::rgb(1.0, 0.0, 0.0),
-        warning: Color::rgb(1.0, 1.0, 0.0),
-        info: Color::rgb(0.0, 1.0, 0.0),
-        debug: Color::rgb(0.25, 0.25, 1.0),
-        trace: Color::rgb(1.0, 0.0, 1.0),
+        dark: Color::srgb(0.5, 0.5, 0.5),
+        text_color: Color::srgb(1.0, 1.0, 1.0),
+        error: Color::srgb(1.0, 0.0, 0.0),
+        warning: Color::srgb(1.0, 1.0, 0.0),
+        info: Color::srgb(0.0, 1.0, 0.0),
+        debug: Color::srgb(0.25, 0.25, 1.0),
+        trace: Color::srgb(1.0, 0.0, 1.0),
     };
 
     /// Returns a [`Color32`] based on the `level`
